@@ -4,7 +4,6 @@ const codsiFrom = mongoose.Schema({
     ID:{
         type: String,
         required:true,
-        unique:true
     },
     name:{
         type: String,

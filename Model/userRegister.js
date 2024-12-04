@@ -10,8 +10,12 @@ const userRegist = mongoose.Schema({
         type:String,
         required:true,
     },
-    workPlace:{
+    title:{
         type:String,
+        required:true,
+    },
+    number:{
+        type: Number,
         required:true,
     },
     password:{
@@ -21,3 +25,5 @@ const userRegist = mongoose.Schema({
  
 })
 module.exports  = mongoose.model("user", userRegist);
+
+ 

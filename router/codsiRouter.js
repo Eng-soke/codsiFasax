@@ -63,6 +63,29 @@ router.delete("/user/delete/:id", async (req, res)=>{
 })
 
 
+router.get("/request", async (req, res) => {
+    const stats = await xogtaCodsiga.aggregate([
+        { $group: { _id: "$ID", count: { $sum: 1 } } },
+        { $sort: { count: -1 } } // Kala saar qofka ugu codsiga badan iyo kan ugu yar
+    ]);
+
+    if (stats.length > 0) {
+        const topRequester = stats[0]; // Ugu codsiga badan
+        const leastRequester = stats[stats.length - 1]; // Ugu codsiga yar
+        res.send({ topRequester, leastRequester });
+    } else {
+        res.send({ message: "No data found" });
+    }
+});
+
+
+router.get("/allrequests", async (req, res) => {
+    const dhamaanCodsiyada = await xogtaCodsiga.find()
+    if(dhamaanCodsiyada){
+        res.send(dhamaanCodsiyada)
+    }
+})
+
 
 
 

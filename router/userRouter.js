@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const xogtaUser = require("../Model/userRegister")
-
+const xogtaCodsiga = require("../Model/codsiForm")
 
 
 
@@ -17,28 +17,35 @@ router.post("/user/create", async (req, res)=>{
 
 
 
-router.post("/user/login", async (req, res)=>{
-    if(req.body.ID && req.body.password){
+router.post("/user/login", async (req, res) => {
+    if (req.body.ID && req.body.password) {
+        const user = await xogtaUser.findOne({ 
+            ID: req.body.ID, 
+            password: req.body.password 
+        }).select("-password"); // Password ha soo bandhigin
 
-        const user = await xogtaUser.findOne(req.body).select("-password")
-        
-        if(user){
-            res.send(user)
-        }
-        else{
+        if (user) {
+            // Haddii user jiro, soo hel dhamaan codsiyada uu leeyahay
+            const userRequests = await xogtaCodsiga.find({ ID: user.ID });
+
             res.send({
-                error : "incrrect email or password"
-            })
+                user: {
+                    ID: user.ID,
+                },
+                requests: userRequests,
+            });
+        } else {
+            res.send({
+                error: "Incorrect ID or password",
+            });
         }
-
-    }
-
-    else{
+    } else {
         res.send({
-            error : "incorrect email or password"
-        })
+            error: "ID and password are required",
+        });
     }
-})
+});
+
 
 
 router.delete("/admin/user/delete/:id", async (req, res)=>{
