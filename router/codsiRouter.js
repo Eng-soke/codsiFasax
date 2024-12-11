@@ -12,24 +12,11 @@ const userRegist = require("../Model/userRegister")
 //codsi
 
 router.post("/codsi", async (req, res)=>{
-    const adminUser = await userRegist.findOne({ID: req.body.ID})
-    if(!adminUser){
-       return res.send({
-            error : "Id not found",
-        })
+    const codsiUser = userRegist(req.body)
+    const saveUserCodsi = await codsiUser.save()
+    if(saveUserCodsi){
+        res.send("Request has been sent successfully")
     }
-    const newCodsi = new xogtaCodsiga(req.body)
-    const saveCodsi = await newCodsi.save()
-
-    if(saveCodsi){
-        res.send("Codsiga waad ku guuleysatay")
-    }
-    else{
-        res.send({
-            error : "Id not found",
-        })
-    }
-
 
 })
 

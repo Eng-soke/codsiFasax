@@ -39,37 +39,44 @@ router.post("/user/create", async (req, res) => {
 
 
 
-router.post("/user/login", async (req, res) => {
-    if (req.body.ID && req.body.password) {
-        const user = await xogtaUser.findOne({ 
-            ID: req.body.ID, 
-            password: req.body.password 
-        }).select("-password"); // Password ha soo bandhigin
-
+  router.post("/user/login", async (req, res) => {
+    try {
+      // Hubi in ID iyo password la soo diray
+      if (req.body.ID && req.body.password) {
+        
+        const user = await xogtaUser.findOne({
+          ID: req.body.ID,
+          password: req.body.password,
+        }).select("-password"); // Password ma lama soo celin doono
+  
         if (user) {
-            // Haddii user jiro, soo hel dhamaan codsiyada uu leeyahay
-            const userRequests = await xogtaCodsiga.find({ ID: user.ID });
-
-            res.send({
-                user: {
-                    ID: user.ID,
-                    name: user.name,    
-                    title: user.title,  
-                    number: user.number
-                },
-                requests: userRequests,
-            });
+          // Raadi codsiyada uu user-ka leeyahay
+          const userRequests = await xogtaCodsiga.find({ ID: user.ID });
+  
+          // Dib u soo celi xogta user-ka iyo codsiyada uu dirsaday
+          res.send({
+            user: {
+              ID: user.ID,
+              name: user.name,
+              title: user.title,
+              number: user.number,
+            },
+            requests: userRequests, // Codsiyada user-ka uu hore u dirsaday
+          });
         } else {
-            res.send({
-                error: "Incorrect ID or password",
-            });
+          // Haddii ID ama password qaldan yihiin
+          res.send({ error: "Incorrect ID or password" });
         }
-    } else {
-        res.send({
-            error: "ID and password are required",
-        });
+      } else {
+        // Haddii ID iyo password aan la soo dirin
+        res.send({ error: "ID and password are required" });
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+      res.send({ error: "Something went wrong. Please try again later." });
     }
-});
+  });
+  
 
 
 
