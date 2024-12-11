@@ -7,13 +7,35 @@ const xogtaCodsiga = require("../Model/codsiForm")
 
 
 
-router.post("/user/create", async (req, res)=>{
-    const newUser = xogtaUser(req.body)
-    const saveUser = await newUser.save()
-    if(saveUser){
-        res.send("User has been created")
+router.post("/user/create", async (req, res) => {
+    try {
+      const newUser = new xogtaUser({
+        ID: req.body.ID,
+        name: req.body.name,
+        password: req.body.password,
+        title: req.body.title,
+        number: req.body.number,
+      });
+  
+      // Kaydinta user cusub
+      const savedUser = await newUser.save();
+  
+      // Xogta user cusub oo la soo celinayo
+      res.send({
+        message: "User has been created",
+        user: {
+          ID: savedUser.ID,
+          name: savedUser.name,
+          title: savedUser.title,
+          number: savedUser.number,
+        },
+      });
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.send({ error: "Failed to create user" });
     }
-})
+  });
+  
 
 
 
@@ -31,6 +53,9 @@ router.post("/user/login", async (req, res) => {
             res.send({
                 user: {
                     ID: user.ID,
+                    name: user.name,    
+                    title: user.title,  
+                    number: user.number
                 },
                 requests: userRequests,
             });
@@ -55,6 +80,8 @@ router.delete("/admin/user/delete/:id", async (req, res)=>{
     }
 })
 
+
+
 router.put("/admin/update/:id", async (req, res)=>{
     const dataUpdate = await xogtaUser.updateOne(
         {_id: req.params.id},
@@ -65,6 +92,8 @@ router.put("/admin/update/:id", async (req, res)=>{
         res.send("User has been updated")
     }
 })
+
+
 
 router.get("/single/update/admin/:id", async (req, res)=>{
     const getSingleUpdate = await xogtaUser.find({_id: req.params.id})

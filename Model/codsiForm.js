@@ -1,21 +1,10 @@
 const mongoose = require('mongoose');
 
 const codsiFrom = mongoose.Schema({
-    ID:{
-        type: String,
-        required:true,
-    },
-    name:{
-        type: String,
-        
-    },
+   
     codsi:{
         type: String,
         required:true,
-    },
-    workPlace:{
-        type: String,
-        required:true
     },
     departureTime:{
         type: String,
